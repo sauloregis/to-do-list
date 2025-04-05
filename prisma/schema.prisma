@@ -7,11 +7,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Group {
+  id   String @id @default(uuid())
+  name String 
+  task Task[]
+}
+
 model Task {
   id          String   @id @default(uuid())
   title       String
   description String?
   completed   Boolean  @default(false)
+  groupId     String?  
+  group       Group?   @relation(fields: [groupId], references: [id])
+
   createdAt   DateTime @default(now())
 }
 

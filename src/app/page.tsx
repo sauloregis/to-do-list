@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getTasks, getGroups, createTask, createGroup, toggleTask, deleteTask, updateTask } from "./actions/taskActions";
-import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { FaRegTrashAlt, FaRegEdit , FaSave, FaTimes } from "react-icons/fa";
 import { Task } from "../../src/interfaces";
 
 export default function Home() {
@@ -99,7 +99,6 @@ export default function Home() {
   return (
     <main className="bg-gray-100 min-h-screen flex justify-center items-start p-6">
       <div className="w-full max-w-4xl">
-        {/* Área de criação de tarefa e grupo */}
         <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
           <h1 className="text-2xl font-bold mb-4">Lista de Tarefas</h1>
   
@@ -108,7 +107,7 @@ export default function Home() {
             <select
               value={group}
               onChange={(e) => setGroup(e.target.value)}
-              className="p-2 border rounded w-36"
+              className="p-2 border rounded w-40 h-10.5"
             >
               <option value="">Grupo</option>
               {groups.map((g) => (
@@ -117,15 +116,16 @@ export default function Home() {
                 </option>
               ))}
             </select>
-  
+                
             <input
               type="text"
-              placeholder="Nova tarefa..."
+              placeholder="Título..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="p-2 border rounded w-40"
             />
-  
+            {titleError && <p className="text-red-500">{titleError}</p>}
+
             <input
               type="text"
               placeholder="Descrição..."
@@ -136,7 +136,7 @@ export default function Home() {
   
             <button
               onClick={handleCreateTask}
-              className="bg-blue-500 text-white p-2 rounded whitespace-nowrap"
+              className="bg-[#3ac47d] text-white p-2 rounded whitespace-nowrap"
             >
               Adicionar
             </button>
@@ -153,7 +153,7 @@ export default function Home() {
             />
             <button
               onClick={handleCreateGroup}
-              className="p-2 bg-green-500 text-white rounded"
+              className="p-2 bg-[#2ecc71] text-white rounded"
             >
               Criar grupo
             </button>
@@ -167,6 +167,7 @@ export default function Home() {
               {editingTaskId === task.id ? (
                 // Modo de edição
                 <div className="flex flex-col flex-grow">
+                  <p>Grupo:</p>
                   <select
                     value={editingGroup}
                     onChange={(e) => setEditingGroup(e.target.value)}
@@ -179,13 +180,15 @@ export default function Home() {
                       </option>
                     ))}
                   </select>
-  
+                  <p>Título:</p>
                   <input
                     type="text"
                     value={editingTitle}
                     onChange={(e) => setEditingTitle(e.target.value)}
                     className="mb-2 p-2 border rounded"
                   />
+
+                  <p>Descrição:</p>
                   <input
                     type="text"
                     value={editingDescription}
@@ -220,7 +223,9 @@ export default function Home() {
                       {task.title}
                     </span>
                     {task.description && (
-                      <p className="text-sm text-gray-700">{task.description}</p>
+                      <div>
+                        <p className="text-sm text-gray-700">Descrição: {task.description}</p>
+                      </div>
                     )}
                     <p className="text-xs text-gray-500">
                       Grupo: {task.group?.name || "Nenhum"}
@@ -231,13 +236,13 @@ export default function Home() {
                       onClick={() => startEditing(task)} 
                       className="text-blue-500"
                     >
-                      <FaEdit className="h-6 w-6" />
+                      <FaRegEdit className="h-6 w-6" />
                     </button>
                     <button 
                       onClick={() => handleDeleteTask(task.id)} 
                       className="text-red-500"
                     >
-                      <FaTrash className="h-6 w-6" />
+                      <FaRegTrashAlt className="h-6 w-6" />
                     </button>
                   </div>
                 </>

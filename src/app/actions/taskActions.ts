@@ -10,7 +10,15 @@ export async function getTasks(): Promise<Task[]> {
 }
 
 export async function createTask(title: string, description?: string, groupId?: string): Promise<Task> {
-  return await prisma.task.create({ data: { title, description: description || null, ...(groupId ? {group: { connect: { id: groupId } } } : {}), }, });
+  try {
+    return await prisma.task.create({ data: { title, description: description || null, ...(groupId ? {group: { connect: { id: groupId } } } : {}), }, });
+    } catch (error:any) {
+    console.error("Erro ao criar tarefa:", error);
+    if(error.code === "P2002") {
+      throw new Error ("Já existe uma tarefa com esse título.");
+    }
+    throw new Error ("Erro ao criar tarefa.");
+  }
 }
 
 export async function toggleTask(id: string, completed: boolean): Promise<Task> {

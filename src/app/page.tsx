@@ -142,18 +142,18 @@ export default function Home() {
             </button>
           </div>
   
-          {/* Formulário de criação de grupo */}
+          {/* Formulário de criação de Categoria */}
           <div className="flex items-center gap-2 mt-4 text-black">
             <input
               type="text"
               placeholder="Nova Categoria..."
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
-              className="flex-grow p-2 border rounded"
+              className="p-2 border rounded h-[42px] flex-grow min-w-0"
             />
             <button
               onClick={handleCreateGroup}
-              className="p-2 bg-[#38618d] hover:bg-[#1f4d7e] text-white rounded"
+              className="h-[42px] px-4 bg-[#38618d] hover:bg-[#1f4d7e] text-white rounded whitespace-nowrap"
             >
               Criar Categoria
             </button>
@@ -167,7 +167,7 @@ export default function Home() {
               {editingTaskId === task.id ? (
                 // Modo de edição
                 <div className="flex flex-col flex-grow text-black">
-                  <p>Grupo:</p>
+                  <p>Categoria:</p>
                   <select
                     value={editingGroup}
                     onChange={(e) => setEditingGroup(e.target.value)}
@@ -228,7 +228,7 @@ export default function Home() {
                       </div>
                     )}
                     <p className="text-xs text-gray-500">
-                      Grupo: {task.group?.name || "Nenhum"}
+                      Categoria: {task.group?.name || "Nenhum"}
                     </p>
                   </div>
                   <div className="flex space-x-2">

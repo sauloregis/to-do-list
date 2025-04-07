@@ -153,7 +153,7 @@ export default function Home() {
             />
             <button
               onClick={handleCreateGroup}
-              className="h-[42px] px-4 bg-[#38618d] hover:bg-[#1f4d7e] text-white rounded whitespace-nowrap"
+              className="h-[42px] px-4 bg-[#935139] hover:bg-[#873e23] text-white rounded whitespace-nowrap"
             >
               Criar Categoria
             </button>

@@ -97,19 +97,19 @@ export default function Home() {
   }
 
   return (
-    <main className="bg-gray-100 min-h-screen flex justify-center items-start p-6">
+    <main className="bg-[#e6ebf1] min-h-screen flex justify-center items-start p-6">
       <div className="w-full max-w-4xl">
         <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
-          <h1 className="text-2xl font-bold mb-4">Lista de Tarefas</h1>
+          <h1 className="text-2xl font-bold mb-4 text-black">Lista de Tarefas</h1>
   
           {/* Formulário de criação de tarefa */}
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex flex-wrap gap-2 items-center text-black">
             <select
               value={group}
               onChange={(e) => setGroup(e.target.value)}
               className="p-2 border rounded w-40 h-10.5"
             >
-              <option value="">Grupo</option>
+              <option value="">Categoria</option>
               {groups.map((g) => (
                 <option key={g.id} value={g.id}>
                   {g.name}
@@ -136,26 +136,26 @@ export default function Home() {
   
             <button
               onClick={handleCreateTask}
-              className="bg-[#3ac47d] text-white p-2 rounded whitespace-nowrap"
+              className="bg-[#063970] hover:bg-[#053365] text-white p-2 rounded whitespace-nowrap"
             >
               Adicionar
             </button>
           </div>
   
           {/* Formulário de criação de grupo */}
-          <div className="flex items-center gap-2 mt-4">
+          <div className="flex items-center gap-2 mt-4 text-black">
             <input
               type="text"
-              placeholder="Novo grupo..."
+              placeholder="Nova Categoria..."
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
               className="flex-grow p-2 border rounded"
             />
             <button
               onClick={handleCreateGroup}
-              className="p-2 bg-[#2ecc71] text-white rounded"
+              className="p-2 bg-[#38618d] hover:bg-[#1f4d7e] text-white rounded"
             >
-              Criar grupo
+              Criar Categoria
             </button>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function Home() {
             <li key={task.id} className="flex justify-between items-start bg-white p-4 rounded shadow">
               {editingTaskId === task.id ? (
                 // Modo de edição
-                <div className="flex flex-col flex-grow">
+                <div className="flex flex-col flex-grow text-black">
                   <p>Grupo:</p>
                   <select
                     value={editingGroup}
@@ -198,13 +198,13 @@ export default function Home() {
                   <div className="flex space-x-2">
                     <button 
                       onClick={() => handleUpdateTask(task.id)} 
-                      className="p-2 bg-green-500 text-white rounded"
+                      className="p-2 bg-[#365f8d] text-white rounded"
                     >
                       <FaSave />
                     </button>
                     <button 
                       onClick={cancelEditing} 
-                      className="p-2 bg-gray-500 text-white rounded"
+                      className="p-2 bg-gray-400 text-white rounded"
                     >
                       <FaTimes />
                     </button>
@@ -215,7 +215,7 @@ export default function Home() {
                 <>
                   <div className="flex-grow">
                     <span
-                      className={`cursor-pointer block font-medium ${
+                      className={`cursor-pointer block font-medium text-black ${
                         task.completed ? "line-through text-gray-500" : ""
                       }`}
                       onClick={() => handleToggleTask(task.id, task.completed)}
@@ -234,13 +234,13 @@ export default function Home() {
                   <div className="flex space-x-2">
                     <button 
                       onClick={() => startEditing(task)} 
-                      className="text-blue-500"
+                      className="text-[#4f739b]"
                     >
                       <FaRegEdit className="h-6 w-6" />
                     </button>
                     <button 
                       onClick={() => handleDeleteTask(task.id)} 
-                      className="text-red-500"
+                      className="text-red-400"
                     >
                       <FaRegTrashAlt className="h-6 w-6" />
                     </button>

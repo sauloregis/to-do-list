@@ -109,13 +109,17 @@ export default function Home() {
   return (
     <main className="bg-[#e6ebf1] min-h-screen flex justify-center items-start p-6">
       <div className="w-full max-w-4xl">
+
         <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
           <h1 className="text-2xl font-bold mb-4 text-black">Lista de Tarefas</h1>
           
           {/* Tabs */}
           <div className="flex border-b mb-4">
             <button
-              onClick={() => setActiveTab('task')}
+              onClick={() => {
+                setActiveTab('task');
+                setTitleError('');
+              }}
               className={`py-2 px-4 font-medium ${activeTab === 'task'
                 ? 'border-b-2 border-[#063970] text-[#063970]'
                 : 'text-gray-500 hover:text-gray-700'}`}
@@ -123,7 +127,10 @@ export default function Home() {
               Adicionar Tarefa
             </button>
             <button
-              onClick={() => setActiveTab('category')}
+              onClick={() => {
+                setActiveTab('category');
+                setTitleError(''); // limpa o erro ao mudar para essa aba
+              }}
               className={`py-2 px-4 font-medium ${activeTab === 'category'
                 ? 'border-b-2 border-[#935139] text-[#935139]'
                 : 'text-gray-500 hover:text-gray-700'}`}
@@ -131,47 +138,67 @@ export default function Home() {
               Criar Categoria
             </button>
           </div>
-          
+                
+          {titleError && (
+            <div>
+              <p className="text-sm mb-1 text-red-500">
+                {titleError}
+              </p>
+            </div>
+          )}
+
           {/* Tab Content */}
           <div className="mt-4">
             {/* Task Creation Form */}
             {activeTab === 'task' && (
               <div className="flex flex-wrap gap-2 items-center text-black">
-                <select
-                  value={group}
-                  onChange={(e) => setGroup(e.target.value)}
-                  className="p-2 border rounded w-40 h-10.5"
-                >
-                  <option value="">Categoria</option>
-                  {groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name}
-                    </option>
-                  ))}
-                </select>
+
+                <div className="flex flex-col w-40">
+                  <select
+                    value={group}
+                    onChange={(e) => setGroup(e.target.value)}
+                    className="p-2 border rounded w-40 h-10.5"
+                  >
+                    <option value="">Categoria</option>
+                    {groups.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {g.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>  
                 
-                <input
-                  type="text"
-                  placeholder="Título..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="p-2 border rounded w-40"
-                />
-                {titleError && <p className="text-red-500 w-full">{titleError}</p>}
-                <input
-                  type="text"
-                  placeholder="Descrição..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="flex-grow p-2 border rounded min-w-[200px]"
-                />
+                <div className="flex flex-col w-40">
+                  <input
+                    type="text"
+                    placeholder="Título..."
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      setTitleError('');
+                    }} 
+                    className={`p-2 border rounded ${titleError ? 'border-red-500' : ''}`}
+                  />
+                </div>
+
+                <div className="flex flex-col flex-grow min-w-[200px]">
+                  <input
+                    type="text"
+                    placeholder="Descrição..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="p-2 border rounded"
+                  />
+                </div>
                 
-                <button
-                  onClick={handleCreateTask}
-                  className="bg-[#063970] hover:bg-[#053365] text-white p-2 rounded whitespace-nowrap"
-                >
-                  Adicionar
-                </button>
+                <div className="flex items-end">
+                  <button
+                    onClick={handleCreateTask}
+                    className="bg-[#063970] hover:bg-[#053365] text-white p-2 rounded whitespace-nowrap"
+                  >
+                    Adicionar
+                  </button>
+                </div>
               </div>
             )}
             

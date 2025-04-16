@@ -14,7 +14,8 @@ export default function Home() {
       id: string;
       name: string;
     } | null;
-  }[]>([]);  
+  }[]>([]);
+  
   const [title, setTitle] = useState("");
   const [group, setGroup] = useState("");
   const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
@@ -25,6 +26,7 @@ export default function Home() {
   const [editingTitle, setEditingTitle] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
   const [titleError, setTitleError] = useState("");
+  const [activeTab, setActiveTab] = useState<'task' | 'category'>('task');
 
   useEffect(() => {
     loadTasks();
@@ -42,13 +44,13 @@ export default function Home() {
   }
 
   async function handleCreateTask(): Promise<void> {
-    if (!title.trim()){
+    if (!title.trim()) {
       setTitleError("O título é obrigatório.");
       return;
     }
-
+    
     setTitleError("");
-    try{
+    try {
       await createTask(title.trim(), description.trim() || "", group);
       setTitle("");
       setDescription("");
@@ -58,7 +60,7 @@ export default function Home() {
       if (error.message.includes("Já existe uma tarefa com esse título.")) {
         setTitleError(error.message);
       } else {
-      console.error(error);
+        console.error(error);
       }
     }
   }
@@ -87,7 +89,7 @@ export default function Home() {
     setEditingGroup(task.groupId || "");
   }
 
-  function cancelEditing(): void{
+  function cancelEditing(): void {
     setEditingTaskId(null);
     setEditingTitle("");
     setEditingDescription("");
@@ -109,65 +111,91 @@ export default function Home() {
       <div className="w-full max-w-4xl">
         <div className="bg-white shadow-lg rounded-xl p-6 mb-6">
           <h1 className="text-2xl font-bold mb-4 text-black">Lista de Tarefas</h1>
-  
-          {/* Formulário de criação de tarefa */}
-          <div className="flex flex-wrap gap-2 items-center text-black">
-            <select
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-              className="p-2 border rounded w-40 h-10.5"
-            >
-              <option value="">Categoria</option>
-              {groups.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name}
-                </option>
-              ))}
-            </select>
-                
-            <input
-              type="text"
-              placeholder="Título..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="p-2 border rounded w-40"
-            />
-            {titleError && <p className="text-red-500">{titleError}</p>}
-
-            <input
-              type="text"
-              placeholder="Descrição..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="flex-grow p-2 border rounded min-w-[200px]"
-            />
-  
+          
+          {/* Tabs */}
+          <div className="flex border-b mb-4">
             <button
-              onClick={handleCreateTask}
-              className="bg-[#063970] hover:bg-[#053365] text-white p-2 rounded whitespace-nowrap"
+              onClick={() => setActiveTab('task')}
+              className={`py-2 px-4 font-medium ${activeTab === 'task'
+                ? 'border-b-2 border-[#063970] text-[#063970]'
+                : 'text-gray-500 hover:text-gray-700'}`}
             >
-              Adicionar
+              Adicionar Tarefa
             </button>
-          </div>
-  
-          {/* Formulário de criação de Categoria */}
-          <div className="flex items-center gap-2 mt-4 text-black">
-            <input
-              type="text"
-              placeholder="Nova Categoria..."
-              value={newGroupName}
-              onChange={(e) => setNewGroupName(e.target.value)}
-              className="p-2 border rounded h-[42px] flex-grow min-w-0"
-            />
             <button
-              onClick={handleCreateGroup}
-              className="h-[42px] px-4 bg-[#935139] hover:bg-[#873e23] text-white rounded whitespace-nowrap"
+              onClick={() => setActiveTab('category')}
+              className={`py-2 px-4 font-medium ${activeTab === 'category'
+                ? 'border-b-2 border-[#935139] text-[#935139]'
+                : 'text-gray-500 hover:text-gray-700'}`}
             >
               Criar Categoria
             </button>
           </div>
+          
+          {/* Tab Content */}
+          <div className="mt-4">
+            {/* Task Creation Form */}
+            {activeTab === 'task' && (
+              <div className="flex flex-wrap gap-2 items-center text-black">
+                <select
+                  value={group}
+                  onChange={(e) => setGroup(e.target.value)}
+                  className="p-2 border rounded w-40 h-10.5"
+                >
+                  <option value="">Categoria</option>
+                  {groups.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name}
+                    </option>
+                  ))}
+                </select>
+                
+                <input
+                  type="text"
+                  placeholder="Título..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="p-2 border rounded w-40"
+                />
+                {titleError && <p className="text-red-500 w-full">{titleError}</p>}
+                <input
+                  type="text"
+                  placeholder="Descrição..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="flex-grow p-2 border rounded min-w-[200px]"
+                />
+                
+                <button
+                  onClick={handleCreateTask}
+                  className="bg-[#063970] hover:bg-[#053365] text-white p-2 rounded whitespace-nowrap"
+                >
+                  Adicionar
+                </button>
+              </div>
+            )}
+            
+            {/* Category Creation Form */}
+            {activeTab === 'category' && (
+              <div className="flex items-center gap-2 text-black">
+                <input
+                  type="text"
+                  placeholder="Nova Categoria..."
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  className="p-2 border rounded h-[42px] flex-grow min-w-0"
+                />
+                <button
+                  onClick={handleCreateGroup}
+                  className="h-[42px] px-4 bg-[#935139] hover:bg-[#873e23] text-white rounded whitespace-nowrap"
+                >
+                  Criar Categoria
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-  
+        
         {/* Lista de tarefas */}
         <ul className="space-y-2">
           {tasks.map((task) => (
@@ -195,7 +223,6 @@ export default function Home() {
                     onChange={(e) => setEditingTitle(e.target.value)}
                     className="mb-2 p-2 border rounded"
                   />
-
                   <p>Descrição:</p>
                   <input
                     type="text"
@@ -204,14 +231,14 @@ export default function Home() {
                     className="mb-2 p-2 border rounded"
                   />
                   <div className="flex space-x-2">
-                    <button 
-                      onClick={() => handleUpdateTask(task.id)} 
+                    <button
+                      onClick={() => handleUpdateTask(task.id)}
                       className="p-2 bg-[#365f8d] text-white rounded"
                     >
                       <FaSave />
                     </button>
-                    <button 
-                      onClick={cancelEditing} 
+                    <button
+                      onClick={cancelEditing}
                       className="p-2 bg-gray-400 text-white rounded"
                     >
                       <FaTimes />
@@ -240,14 +267,14 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="flex space-x-2">
-                    <button 
-                      onClick={() => startEditing(task)} 
+                    <button
+                      onClick={() => startEditing(task)}
                       className="text-[#4f739b]"
                     >
                       <FaRegEdit className="h-6 w-6" />
                     </button>
-                    <button 
-                      onClick={() => handleDeleteTask(task.id)} 
+                    <button
+                      onClick={() => handleDeleteTask(task.id)}
                       className="text-red-400"
                     >
                       <FaRegTrashAlt className="h-6 w-6" />
@@ -261,5 +288,4 @@ export default function Home() {
       </div>
     </main>
   );
-  
 }

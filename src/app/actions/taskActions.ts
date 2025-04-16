@@ -30,11 +30,19 @@ export async function deleteTask(id: string): Promise<Task> {
 }
 
 export async function updateTask(id: string, title: string, description: string, groupId?: string): Promise<Task> {
-  return await prisma.task.update({ where: { id }, 
-                                    data: {title, 
-                                          description, 
-                                          group: groupId ? { connect: { id: groupId } } : { disconnect: true },},
-                                  });
+  try {
+    return await prisma.task.update({ where: { id }, 
+                                      data: {title, 
+                                            description, 
+                                            group: groupId ? { connect: { id: groupId } } : { disconnect: true },},
+                                    });
+    } catch (error:any) {
+      console.error("Erro ao criar tarefa:", error);
+      if(error.code === "P2002") {
+        throw new Error ("Já existe uma tarefa com esse título.");
+      }
+      throw new Error ("Erro ao criar tarefa.");
+  }
 }
 
 export async function getGroups() {

@@ -25,7 +25,8 @@ export default function Home() {
   const [description, setDescription] = useState("");
   const [editingTitle, setEditingTitle] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
-  const [titleError, setTitleError] = useState("");
+  const [createTitleError, setCreateTitleError] = useState("");
+  const [editTitleError, setEditTitleError] = useState("");
   const [activeTab, setActiveTab] = useState<'task' | 'category'>('task');
 
   useEffect(() => {
@@ -45,11 +46,11 @@ export default function Home() {
 
   async function handleCreateTask(): Promise<void> {
     if (!title.trim()) {
-      setTitleError("O título é obrigatório.");
+      setCreateTitleError("O título é obrigatório.");
       return;
     }
     
-    setTitleError("");
+    setCreateTitleError("");
     try {
       await createTask(title.trim(), description.trim() || "", group);
       setTitle("");
@@ -58,7 +59,7 @@ export default function Home() {
       loadTasks();
     } catch (error: any) {
       if (error.message.includes("Já existe uma tarefa com esse título.")) {
-        setTitleError(error.message);
+        setCreateTitleError(error.message);
       } else {
         console.error(error);
       }
@@ -97,13 +98,21 @@ export default function Home() {
 
   async function handleUpdateTask(id: string): Promise<void> {
     if (!editingTitle.trim()) {
-      setTitleError("O título é obrigatório.")
+      setEditTitleError("O título é obrigatório.")
       return;
     }
-    setTitleError("");
-    await updateTask(id, editingTitle.trim(), editingDescription.trim(), editingGroup || "");
-    cancelEditing();
-    loadTasks();
+    try{
+      setEditTitleError("");
+      await updateTask(id, editingTitle.trim(), editingDescription.trim(), editingGroup || "");
+      cancelEditing();
+      loadTasks();
+    } catch (error: any) {
+      if (error.message.includes("Já existe uma tarefa com esse título.")) {
+        setEditTitleError(error.message);
+      } else {
+        console.error(error);
+      }
+    }
   }
 
   return (
@@ -118,7 +127,7 @@ export default function Home() {
             <button
               onClick={() => {
                 setActiveTab('task');
-                setTitleError('');
+                setCreateTitleError('');
               }}
               className={`py-2 px-4 font-medium ${activeTab === 'task'
                 ? 'border-b-2 border-[#063970] text-[#063970]'
@@ -129,7 +138,7 @@ export default function Home() {
             <button
               onClick={() => {
                 setActiveTab('category');
-                setTitleError(''); // limpa o erro ao mudar para essa aba
+                setCreateTitleError('');
               }}
               className={`py-2 px-4 font-medium ${activeTab === 'category'
                 ? 'border-b-2 border-[#935139] text-[#935139]'
@@ -138,11 +147,12 @@ export default function Home() {
               Criar Categoria
             </button>
           </div>
-                
-          {titleError && (
+
+          {/* Erros */}      
+          {createTitleError && (
             <div>
               <p className="text-sm mb-1 text-red-500">
-                {titleError}
+                {createTitleError}
               </p>
             </div>
           )}
@@ -175,9 +185,9 @@ export default function Home() {
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
-                      setTitleError('');
+                      setCreateTitleError('');
                     }} 
-                    className={`p-2 border rounded ${titleError ? 'border-red-500' : ''}`}
+                    className={`p-2 border rounded ${createTitleError ? 'border-red-500' : ''}`}
                   />
                 </div>
 
@@ -228,7 +238,7 @@ export default function Home() {
           {tasks.map((task) => (
             <li key={task.id} className="flex justify-between items-start bg-white p-4 rounded shadow">
               {editingTaskId === task.id ? (
-                // Modo de edição
+                 // Modo de edição 
                 <div className="flex flex-col flex-grow text-black">
                   <p>Categoria:</p>
                   <select
@@ -243,12 +253,26 @@ export default function Home() {
                       </option>
                     ))}
                   </select>
+
                   <p>Título:</p>
+
+                  {/* Erros */}      
+                  {editTitleError && (
+                    <div>
+                      <p className="text-sm mb-1 text-red-500">
+                        {editTitleError}
+                      </p>
+                    </div>
+                  )}
+
                   <input
                     type="text"
                     value={editingTitle}
-                    onChange={(e) => setEditingTitle(e.target.value)}
-                    className="mb-2 p-2 border rounded"
+                    onChange={(e) => {
+                      setEditingTitle(e.target.value);
+                      setEditTitleError('');
+                    }}
+                    className={`mb-2 p-2 border rounded ${editTitleError ? 'border-red-500' : ''}`}
                   />
                   <p>Descrição:</p>
                   <input

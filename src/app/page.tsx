@@ -46,13 +46,21 @@ export default function Home() {
       setTitleError("O título é obrigatório.");
       return;
     }
-    
+
     setTitleError("");
-    await createTask(title.trim(), description.trim() || "", group);
-    setTitle("");
-    setDescription("");
-    setGroup("");
-    loadTasks();
+    try{
+      await createTask(title.trim(), description.trim() || "", group);
+      setTitle("");
+      setDescription("");
+      setGroup("");
+      loadTasks();
+    } catch (error: any) {
+      if (error.message.includes("Já existe uma tarefa com esse título.")) {
+        setTitleError(error.message);
+      } else {
+      console.error(error);
+      }
+    }
   }
 
   async function handleCreateGroup() {

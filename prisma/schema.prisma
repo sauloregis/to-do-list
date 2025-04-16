@@ -15,7 +15,7 @@ model Group {
 
 model Task {
   id          String   @id @default(uuid())
-  title       String
+  title       String   @unique
   description String?
   completed   Boolean  @default(false)
   groupId     String?  

@@ -5,17 +5,7 @@ import { FaRegTrashAlt, FaRegEdit , FaSave, FaTimes } from "react-icons/fa";
 import { Task } from "../../src/interfaces";
 
 export default function Home() {
-  const [tasks, setTasks] = useState<{
-    id: string;
-    title: string;
-    description: string | null;
-    completed: boolean;
-    group?: {
-      id: string;
-      name: string;
-    } | null;
-  }[]>([]);
-  
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
   const [group, setGroup] = useState("");
   const [groups, setGroups] = useState<{ id: string; name: string }[]>([]);
@@ -35,13 +25,21 @@ export default function Home() {
   }, []);
 
   async function loadTasks(): Promise<void> {
-    const data = await getTasks();
-    setTasks(data);
+    try {
+      const data = await getTasks();
+      setTasks(data);
+    } catch (error) {
+      console.error("Erro ao carregar tasks", error);
+    }
   }
 
   async function loadGroups() {
-    const data = await getGroups();
-    setGroups(data);
+    try{
+      const data = await getGroups();
+      setGroups(data);
+    } catch (error) {
+      console.error("Erro ao carregar categorias", error);
+    }
   }
 
   async function handleCreateTask(): Promise<void> {
